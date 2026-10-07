@@ -1,12 +1,14 @@
 <?php
+
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder {
     public function run() {
         $this->call([
-            SchoolSeeder::class,    // ← 1-chi: maktablar
-            UserSeeder::class,      // ← 2-chi: foydalanuvchilar
-            StudentSeeder::class,   // ← 3-chi: o'quvchilar
+            SchoolSeeder::class,      // 1. Maktablar
+            AdminSeeder::class,       // 2. Admin
+            UserSeeder::class,        // 3. Ustoz, psixolog, ota-ona, IIO
+            StudentSeeder::class,     // 4. O'quvchilar
         ]);
     }
 }

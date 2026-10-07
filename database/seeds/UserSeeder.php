@@ -1,4 +1,5 @@
 <?php
+
 use App\School;
 use App\User;
 use Illuminate\Database\Seeder;
@@ -6,50 +7,77 @@ use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder {
     public function run() {
-        $school = School::where('name', "1-son umumta'lim maktabi")->first();
+        // Maktabni topish
+        $school = School::first();
 
+        if (!$school) {
+            $this->command->error("❌ Maktab topilmadi! Avval SchoolSeeder ishga tushiring.");
+            return;
+        }
+
+        $this->command->info("📚 Maktab: {$school->name}");
+
+        // ==================== TEACHER ====================
+        $teacherData = config('auth-seed.teacher');
         User::updateOrCreate(
-            ['email' => 'odil@soglomavlod.uz'],
+            ['email' => $teacherData['email']],
             [
-                'name'     => 'Administrator',
-                'password' => Hash::make('OdiljonAdmin.01'),
-                'role'     => 'admin',
-                'school_id'=> null,
+                'name'      => $teacherData['name'],
+                'password'  => Hash::make($teacherData['password']),
+                'role'      => $teacherData['role'],
+                'school_id' => $school->id,
+                'phone'     => $teacherData['phone'],
+                'is_active' => true,
             ]
         );
+        $this->command->info("✅ Ustoz: {$teacherData['email']}");
 
+        // ==================== PSYCHOLOGIST ====================
+        $psychData = config('auth-seed.psychologist');
         User::updateOrCreate(
-            ['email' => 'teacher@soglomavlod.uz'],
+            ['email' => $psychData['email']],
             [
-                'name'      => 'Nodira Karimova',
-                'password'  => Hash::make('ustozlar'),
-                'role'      => 'teacher',
-                'school_id' => $school ? $school->id : null,
-                'phone'     => '+998901112233',
+                'name'      => $psychData['name'],
+                'password'  => Hash::make($psychData['password']),
+                'role'      => $psychData['role'],
+                'school_id' => $school->id,
+                'phone'     => $psychData['phone'],
+                'is_active' => true,
             ]
         );
+        $this->command->info("✅ Psixolog: {$psychData['email']}");
 
+        // ==================== PARENT ====================
+        $parentData = config('auth-seed.parent');
         User::updateOrCreate(
-            ['email' => 'psixolog@soglomavlod.uz'],
+            ['email' => $parentData['email']],
             [
-                'name'      => 'Dilshod Rahimov',
-                'password'  => Hash::make('psixolog'),
-                'role'      => 'psychologist',
-                'school_id' => $school ? $school->id : null,
-                'phone'     => '+998902223344',
+                'name'      => $parentData['name'],
+                'password'  => Hash::make($parentData['password']),
+                'role'      => $parentData['role'],
+                'school_id' => $school->id,
+                'phone'     => $parentData['phone'],
+                'is_active' => true,
             ]
         );
+        $this->command->info("✅ Ota-ona: {$parentData['email']}");
 
-       
-
+        // ==================== IIO ====================
+        $iioData = config('auth-seed.iio');
         User::updateOrCreate(
-            ['email' => 'iio@soglomavlod.uz'],
+            ['email' => $iioData['email']],
             [
-                'name'      => 'Kapitan Bobur Aliyev',
-                'password'  => Hash::make('iio'),
-                'role'      => 'iio',
-                'school_id' => null,
+                'name'      => $iioData['name'],
+                'password'  => Hash::make($iioData['password']),
+                'role'      => $iioData['role'],
+                'school_id' => null,   // IIO maktabga bog'lanmagan
+                'phone'     => $iioData['phone'],
+                'is_active' => true,
             ]
         );
+        $this->command->info("✅ IIO: {$iioData['email']}");
+
+        $this->command->info("");
+        $this->command->info("🎉 Barcha foydalanuvchilar yaratildi!");
     }
 }
